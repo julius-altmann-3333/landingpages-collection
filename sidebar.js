@@ -1,4 +1,5 @@
-const sections = document.querySelectorAll("section");
+window.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll("section");
     const labels = document.querySelectorAll("#sidebar p");
 
     window.addEventListener("scroll", () => {
@@ -20,3 +21,5 @@ const sections = document.querySelectorAll("section");
         label.classList.toggle("active", index === current);
       });
     });
+});
+
