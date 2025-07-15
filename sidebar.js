@@ -1,25 +1,30 @@
 window.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll("section");
-    const labels = document.querySelectorAll("#sidebar p");
+  const labels = document.querySelectorAll("#sidebar p");
+  const progressBar = document.getElementById("vertical-progress");
 
-    window.addEventListener("scroll", () => {
-      const scrollY = window.scrollY;
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollY / totalHeight) * 100;
-      document.getElementById("vertical-progress").style.height = progress + "%";
+  if (!progressBar || sections.length === 0 || labels.length === 0) {
+    console.error("Required elements not found:", { progressBar, sections, labels });
+    return;
+  }
 
-      // Highlight logic
-      let current = "";
-      sections.forEach((section, index) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
-          current = index;
-        }
-      });
+  window.addEventListener("scroll", () => {
+    const scrollY = window.scrollY;
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = Math.min((scrollY / totalHeight) * 100, 100);
+    progressBar.style.height = `${progress}%`;
 
-      labels.forEach((label, index) => {
-        label.classList.toggle("active", index === current);
-      });
+    let activeIndex = -1;
+    sections.forEach((section, index) => {
+      const rect = section.getBoundingClientRect();
+      // Check if section is in viewport (top is above midpoint, bottom is below top of viewport)
+      if (rect.top <= window.innerHeight * 0.6 && rect.bottom >= 0) {
+        activeIndex = index;
+      }
     });
-});
 
+    labels.forEach((label, index) => {
+      label.classList.toggle("active", index === activeIndex);
+    });
+  });
+});
